@@ -4,8 +4,9 @@
     let loading = true;
     let model;
     let app;
-    
-    let url = "https://prod.spline.design/6kU7G9ercAASvqGU/scene.splinecode";
+    export let setLoading = () => {};
+
+    let url = "https://prod.spline.design/j-kom7YLENbO9BwZ/scene.splinecode";
     // import spline scene
     const onClick = async (e) => {
         const x = e.x;
@@ -14,14 +15,8 @@
         const centerY = window.innerHeight / 2;
         const mousePosX = x - centerX;
         const mousePosY = centerY - y;
-
-        await app?.setVariables({ SpawnX: mousePosX, SpawnY: mousePosY });
-
         // I couldn't get it work as expected, without setTimeout.
         // I think its about spline, doing something in background and async variable updates cause spawn objects on old points.
-        setTimeout(async () => {
-            await app?.emitEvent("mouseDown", "BG");
-        }, 50);
     };
 
     onMount(() => {
@@ -30,10 +25,11 @@
         app = new Application(canvas);
         if (!app) return;
         app.load(url).then((splineScene) => {
-            console.log("hello");
             model = splineScene;
-            loading = false;
-            console.log(loading);
+            setTimeout(() => {
+                loading = false;
+                setLoading();
+            }, 100);
         });
 
         document.addEventListener("click", onClick);
@@ -43,18 +39,21 @@
     });
 </script>
 
-<canvas id="canvas3d" />
-<p>{loading ? "Loading Spline Scene..." : " "}</p>
+<canvas class={loading ? `hidden` : ""} id="canvas3d" />
 
 <style>
     #canvas3d {
-        width: 100vw;
-        height: 100vh;
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
-        background: transparent;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
+        z-index: 10;
+    }
+
+    .hidden {
+        opacity: 0;
     }
 
     p {
