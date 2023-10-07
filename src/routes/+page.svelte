@@ -20,7 +20,9 @@
 			</p>
 			<button> S P L I N E </button>
 		</div>
-		<div class="content-right">Content</div>
+		<div class="content-right">
+			&nbsp;
+		</div>
 	</div>
 
 	<Spline
